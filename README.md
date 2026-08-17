@@ -2,7 +2,7 @@
 
 Classes:
 Objects (superclass)
- - Variables: int Mass, int Size, int[] Coordinate
+ - Variables: int Mass, int Size, int[] Coordinate, float[] Velocity
  - Methods: void Gravity
    
 Planet
@@ -10,5 +10,5 @@ Planet
  - Methods: 
    
 Spaceship
- - Variables: int Fuel, float Force, float Acceleration
+ - Variables: int Fuel, float Force
  - Methods: void Thrust
