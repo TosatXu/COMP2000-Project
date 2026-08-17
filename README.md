@@ -12,3 +12,7 @@ Planet
 Spaceship
  - Variables: int Fuel, float Force
  - Methods: void Thrust
+
+Interfaces:
+Destroyable:
+ - Methods: void Collision
