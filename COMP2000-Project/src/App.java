@@ -1,5 +1,12 @@
 public class App {
     public static void main(String[] args) throws Exception {
-        System.out.println("Hello, World!");
+        Spaceship ship = new Spaceship(0, 0, 0, 0, 1, 5, 120f);
+
+        int n = 0;
+        while (n < 100) {
+            ship.Fly();
+            System.out.println(ship.coordinates[0] + ", " + ship.coordinates[1]);
+            n++;
+        }
     }
 }
