@@ -1,17 +1,35 @@
+import java.awt.Frame;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 public class App {
     public static void main(String[] args) throws Exception {
-        Spaceship ship = new Spaceship(15f, 0, -50, 0, 20, 5, 45f);
-        Planet earth = new Planet(100000f, 0, 0, 0);
+        Frame window = new Frame("Gravity Simulation");
+        SimulationPanel panel = new SimulationPanel();
 
-        int n = 0;
-        while (n < 100) {
-            ship.Fly();
-            ship.Gravity(earth);
-            ship.AdjustAngle();
-            ship.moveObject();
-            System.out.println(ship.coordinates[0] + ", " + ship.coordinates[1]);
-            //System.out.println(ship.angle);
-            n++;
+        window.add(panel);
+        window.setSize(800, 600);
+        window.setLocationRelativeTo(null);
+
+        window.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
+
+        window.setVisible(true);
+
+        while(true) {
+            panel.updatePhysics();
+            panel.repaint();
+
+            try {
+                Thread.sleep(33);
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
