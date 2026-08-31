@@ -9,7 +9,7 @@ public class Spaceship extends SimulationObject {
         super(mass, size, x, y);
         this.fuel = fuel;
         this.force = force;
-        this.angle = angle;
+        this.angle = Math.toRadians(angle);
     }
 
     public void Fly () {
@@ -24,5 +24,7 @@ public class Spaceship extends SimulationObject {
     public void Accelerate () {
         velocity[0] += (force * (float)Math.sin(angle))/mass;
         velocity[1] += (force * (float)Math.cos(angle))/mass;
+
+        angle = Math.atan2(velocity[0], velocity[1]);
     }
 }
