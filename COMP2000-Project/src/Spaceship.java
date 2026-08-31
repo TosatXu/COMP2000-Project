@@ -17,14 +17,18 @@ public class Spaceship extends SimulationObject {
             Accelerate();
             fuel--;
         }
+
+        //Change the position using the velocity
         coordinates[0] += velocity[0];
         coordinates[1] += velocity[1];
     }
 
     public void Accelerate () {
+        //Calculate x and y axis of acceleration using the angle of movement and applying the acceleration to the velocity
         velocity[0] += (force * (float)Math.sin(angle))/mass;
         velocity[1] += (force * (float)Math.cos(angle))/mass;
 
+        //Adjust the angle of movement based on the direction of travel
         angle = Math.atan2(velocity[0], velocity[1]);
     }
 }
