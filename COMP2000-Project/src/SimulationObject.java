@@ -18,7 +18,7 @@ public class SimulationObject {
     }
 
     public void Gravity (SimulationObject target) {
-        double G = 6.674 * 0.00000000001; //Gravitational constant
+        double G = 6.674 * 0.00001; //Gravitational constant
 
         double R = CalculateDistance(this.coordinates, target.coordinates);
 
@@ -26,20 +26,21 @@ public class SimulationObject {
 
         double A = CalculateAngle(this.coordinates, target.coordinates);
 
+        System.out.println(Math.toDegrees(A));
+
         Accelerate(F, A);
     }
 
     public double CalculateDistance (int[] coordinate1, int[] coordinate2) {
-        int x = Math.abs(coordinate1[0] - coordinate2[0]);
-        int y = Math.abs(coordinate1[1] - coordinate2[1]);
+        double x = Math.abs(coordinate1[0] - coordinate2[0]);
+        double y = Math.abs(coordinate1[1] - coordinate2[1]);
 
         return Math.sqrt(x*x + y*y);
     }
 
     public double CalculateAngle (int[] coordinate1, int[] coordinate2) {
-        int x = coordinate1[0] - coordinate2[0];
-        int y = coordinate1[1] - coordinate2[1];
-        System.out.println(Math.atan(y/x));
+        double x = (double)((coordinate1[0]-400) - (coordinate2[0]-400));
+        double y = (double)((coordinate1[1]-300) - (coordinate2[1])-300);
 
         if (x != 0) {
             return Math.atan(y/x);
@@ -47,7 +48,7 @@ public class SimulationObject {
         else if (y > 0) {
             return Math.toRadians(90);
         }
-        return Math.toRadians(270);
+        return Math.toRadians(-90);
     }
 
     public void Accelerate (double f, double angle) {

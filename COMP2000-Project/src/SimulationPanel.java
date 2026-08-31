@@ -7,8 +7,8 @@ public class SimulationPanel extends Panel{
     private Planet earth;
 
     public SimulationPanel(){
-        ship = new Spaceship(15f, 12, 150, 200, 30, 25f, 20.0);
-        earth = new Planet(50000000000000f, 50, 400, 300);
+        ship = new Spaceship(500f, 12, 200, 150, 30, 0f, 0.0);
+        earth = new Planet(50000000f, 100, 400, 300);
 
     }
 
