@@ -22,7 +22,7 @@ public class Spaceship extends SimulationObject {
     }
 
     public void Accelerate () {
-        velocity[0] += force * (float)Math.sin(angle);
-        velocity[1] += force * (float)Math.cos(angle);
+        velocity[0] += (force * (float)Math.sin(angle))/mass;
+        velocity[1] += (force * (float)Math.cos(angle))/mass;
     }
 }

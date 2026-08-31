@@ -1,6 +1,6 @@
 public class App {
     public static void main(String[] args) throws Exception {
-        Spaceship ship = new Spaceship(0, 0, 0, 0, 1, 5, 120f);
+        Spaceship ship = new Spaceship(10f, 0, 0, 0, 10, 5, 120f);
 
         int n = 0;
         while (n < 100) {
