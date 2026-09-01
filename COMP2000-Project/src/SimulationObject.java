@@ -2,13 +2,13 @@ public class SimulationObject {
     public float mass;
     public int size, x, y;
     public int[] coordinates;
-    float[] velocity;
+    double[] velocity;
 
     public SimulationObject(float mass, int size, int x, int y){
         this.mass = mass;
         this.size = size;
         coordinates = new int[]{x, y};
-        velocity = new float[]{0, 0};
+        velocity = new double[]{0, 0};
     }
 
     public void moveObject () {
@@ -39,21 +39,21 @@ public class SimulationObject {
     }
 
     public double CalculateAngle (int[] coordinate1, int[] coordinate2) {
-        double x = (double)((coordinate1[0]-400) - (coordinate2[0]-400));
-        double y = (double)((coordinate1[1]-300) - (coordinate2[1])-300);
+        double x = -(double)((coordinate1[0]) - (coordinate2[0]));
+        double y = -(double)((coordinate1[1]) - (coordinate2[1]));
 
         if (x != 0) {
-            return Math.atan(y/x);
+            return -Math.atan2(y, x);
         }
         else if (y > 0) {
-            return Math.toRadians(90);
+            return Math.toRadians(-90);
         }
-        return Math.toRadians(-90);
+        return Math.toRadians(90);
     }
 
     public void Accelerate (double f, double angle) {
         //Calculate x and y axis of acceleration using the angle of movement and applying the acceleration to the velocity
-        velocity[0] += (f * (float)Math.sin(angle))/mass;
-        velocity[1] += (f * (float)Math.cos(angle))/mass;
+        velocity[0] += (f * Math.cos(angle))/mass;
+        velocity[1] += -(f * Math.sin(angle))/mass;
     }
 }

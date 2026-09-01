@@ -7,17 +7,16 @@ public class SimulationPanel extends Panel{
     private Planet earth;
 
     public SimulationPanel(){
-        ship = new Spaceship(500f, 12, 200, 150, 30, 0f, 0.0);
+        ship = new Spaceship(500f, 12, 300, 150, 200, 50f, 10.0);
         earth = new Planet(50000000f, 100, 400, 300);
 
     }
 
     public void updatePhysics() {
-        ship.Fly();
         ship.Gravity(earth);
+        ship.Fly();
         ship.AdjustAngle();
         ship.moveObject();
-        
     }
 
     @Override
