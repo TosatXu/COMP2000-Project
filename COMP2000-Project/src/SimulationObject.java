@@ -18,7 +18,7 @@ public class SimulationObject {
     }
 
     public void Gravity (SimulationObject target) {
-        double G = 6.674 * 0.00001; //Gravitational constant
+        double G = 6.674 * 0.00000000001; //Gravitational constant
 
         double R = CalculateDistance(this.coordinates, target.coordinates);
 
