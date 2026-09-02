@@ -1,13 +1,19 @@
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.BorderLayout;
 
 public class App {
     public static void main(String[] args) throws Exception {
         Frame window = new Frame("Gravity Simulation");
         SimulationPanel panel = new SimulationPanel();
+        ControlPanel controlPanel = new ControlPanel();
 
-        window.add(panel);
+        window.setLayout(new BorderLayout());
+
+        window.add(panel, BorderLayout.CENTER);
+        window.add(controlPanel, BorderLayout.EAST);
+
         window.setSize(800, 600);
         window.setLocationRelativeTo(null);
 
@@ -19,6 +25,27 @@ public class App {
         });
 
         window.setVisible(true);
+        controlPanel.engineButton.addActionListener(e -> {
+            try {
+                double angle = Double.parseDouble(controlPanel.angleField.getText());
+                float force = Float.parseFloat(controlPanel.forceField.getText());
+                
+                if(angle < 0 || angle > 90) {
+                    System.out.println("Launch angle must be between 0 and 90 degrees.");
+                    return;
+                }
+                if(force < 1 || force > 100) {
+                    System.out.println("Engine force must be between 1 and 100.");
+                    return;
+                }
+
+                panel.getShip().setAngle(angle);
+                panel.getShip().setEngineForce(force);
+            } catch (NumberFormatException ex) {
+                System.err.println("Invalid input, please enter valid numbers.");
+            
+            }
+        });
 
         while(true) {
             panel.updatePhysics();

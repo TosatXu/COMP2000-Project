@@ -44,4 +44,12 @@ public class Spaceship extends SimulationObject implements Collision {
         double radiusSum = (obj1.size / 2.0) + (obj2.size / 2.0);
         return distance <= radiusSum;
     }
+
+    public void setAngle(double angle) {
+        this.angle = Math.toRadians(angle);
+    }
+
+    public void setEngineForce(float force) {
+        this.force = force;
+    }
 }
