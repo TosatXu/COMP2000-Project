@@ -30,10 +30,15 @@ public class SimulationPanel extends Panel{
         int earthY = (int) (earth.coordinates[1] - earth.size / 2);
         g.fillOval(earthX, earthY, earth.size, earth.size);
 
+        
         g.setColor(Color.RED);
-        int shipX = (int) (ship.coordinates[0] - ship.size / 2);
-        int shipY = (int) (ship.coordinates[1] - ship.size /2);
-        g.fillOval(shipX, shipY, ship.size, ship.size);
+        int shipCenterX = (int) ship.coordinates[0];
+        int shipCenterY = (int) ship.coordinates[1];
+        int shipHalf = ship.size/2;
+        int[]shipXPoints = { shipCenterX, shipCenterX - shipHalf, shipCenterX + shipHalf };
+        int[]shipYPoints = { shipCenterY - shipHalf, shipCenterY + shipHalf, shipCenterY + shipHalf };
+
+        g.fillPolygon(shipXPoints, shipYPoints, 3);
 
     }
     
