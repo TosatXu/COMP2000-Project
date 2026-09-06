@@ -47,6 +47,13 @@ public class App {
             }
         });
 
+        controlPanel.startButton.addActionListener(e -> panel.startSimulation());
+        controlPanel.pauseButton.addActionListener(e -> panel.pauseSimulation());
+        controlPanel.resetButton.addActionListener(e -> {
+            panel.resetSimulation();
+            panel.repaint();
+        });
+
         while(true) {
             panel.updatePhysics();
             panel.repaint();

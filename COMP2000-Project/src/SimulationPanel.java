@@ -6,15 +6,36 @@ import java.awt.Graphics2D;
 public class SimulationPanel extends Panel{
     private Spaceship ship;
     private Planet earth;
-
+    private boolean isRunning = false;
 
     public SimulationPanel(){
-        ship = new Spaceship(500f, 12, 400, 250, 30,40f, 45.0, 4500f);
-        earth = new Planet(50000000000000f, 100, 400, 300);
+        resetSimulation();
 
     }
 
+    public void resetSimulation(){
+        ship = new Spaceship(500f, 12, 400, 250, 30,40f, 45.0, 4500f);
+        earth = new Planet(50000000000000f, 100, 400, 300);
+        isRunning = false;
+
+    }
+
+    public void startSimulation(){
+        isRunning = true;
+    }
+
+    public void pauseSimulation(){
+        isRunning = false;
+    }
+
+    public boolean isRunning(){
+        return isRunning;
+    }
+
     public void updatePhysics() {
+        if(isRunning == false) {
+            return;
+        }
         ship.Gravity(earth);
         ship.Fly();
         ship.AdjustAngle();
