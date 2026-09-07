@@ -14,8 +14,8 @@ public class SimulationPanel extends Panel{
     }
 
     public void resetSimulation(){
-        ship = new Spaceship(500f, 12, 400, 250, 30,40f, 45.0, 4500f);
-        earth = new Planet(50000000000000f, 100, 400, 300);
+        ship = new Spaceship(500f, 12, 300, 250, 30,0f, 69.0, 4500f);
+        earth = new Planet(50000000000000f, 100, 300, 300);
         isRunning = false;
 
     }
@@ -68,7 +68,7 @@ public class SimulationPanel extends Panel{
         int shipHalf = ship.size/2;
 
         g2d.translate(shipX, shipY);
-        g2d.rotate(ship.angle);
+        g2d.rotate(-ship.angle);
         g2d.setColor(Color.RED);
 
         int[] shipPointsX = { shipHalf, -shipHalf, -shipHalf };
