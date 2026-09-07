@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 public class SimulationPanel extends Panel{
     private Spaceship ship;
     private Planet earth;
+    private Planet mars;
     private boolean isRunning = false;
 
     public SimulationPanel(){
@@ -14,8 +15,9 @@ public class SimulationPanel extends Panel{
     }
 
     public void resetSimulation(){
-        ship = new Spaceship(500f, 12, 300, 250, 30,0f, 69.0, 4500f);
-        earth = new Planet(50000000000000f, 100, 300, 300);
+        ship = new Spaceship(500f, 12, 600, 450, 100,15f, 40.0, 5000f);
+        earth = new Planet(50000000000000f, 100, 600, 500);
+        //mars = new Planet(30000000000000f, 70, 800, 300);
         isRunning = false;
 
     }
@@ -37,6 +39,7 @@ public class SimulationPanel extends Panel{
             return;
         }
         ship.Gravity(earth);
+        // ship.Gravity(mars);
         ship.Fly();
         ship.AdjustAngle();
         ship.moveObject();
@@ -51,6 +54,11 @@ public class SimulationPanel extends Panel{
         int earthX = (int) (earth.coordinates[0] - earth.size / 2);
         int earthY = (int) (earth.coordinates[1] - earth.size / 2);
         g.fillOval(earthX, earthY, earth.size, earth.size);
+
+        // g.setColor(Color.orange);
+        // int marsX = (int) (mars.coordinates[0] - mars.size / 2);
+        // int marsY = (int) (mars.coordinates[1] - mars.size / 2);
+        // g.fillOval(marsX, marsY, mars.size, mars.size);
 
         
         // g.setColor(Color.RED);
@@ -71,7 +79,7 @@ public class SimulationPanel extends Panel{
         g2d.rotate(-ship.angle);
         g2d.setColor(Color.RED);
 
-        int[] shipPointsX = { shipHalf, -shipHalf, -shipHalf };
+        int[] shipPointsX = { shipHalf+2, -shipHalf, -shipHalf };
         int[] shipPointsY = { 0, -shipHalf, shipHalf };
         
         g2d.fillPolygon(shipPointsX, shipPointsY, 3);

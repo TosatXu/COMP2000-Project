@@ -21,11 +21,11 @@ public class Spaceship extends SimulationObject implements Collision {
             Launch(launchForce);
             hasLaunched = true;
         }
+
         if (fuel > 0) {
             Accelerate(force, this.angle);
             fuel--;
         }
-        
     }
 
     public void AdjustAngle () {
