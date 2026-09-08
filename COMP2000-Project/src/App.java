@@ -2,6 +2,8 @@ import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.BorderLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class App {
     public static void main(String[] args) throws Exception {
@@ -25,7 +27,10 @@ public class App {
         });
 
         window.setVisible(true);
-        controlPanel.engineButton.addActionListener(e -> {
+
+        controlPanel.engineButton.addMouseListener(new MouseAdapter()  {
+            @Override
+            public void mousePressed(MouseEvent e) {
             try {
                 double angle = Double.parseDouble(controlPanel.angleField.getText());
                 float force = Float.parseFloat(controlPanel.forceField.getText());
@@ -41,9 +46,16 @@ public class App {
 
                 panel.getShip().setAngle(angle);
                 panel.getShip().setEngineForce(force);
+                panel.getShip().isThrusting = true;
             } catch (NumberFormatException ex) {
                 System.err.println("Invalid input, please enter valid numbers.");
             
+            }
+        }
+
+            @Override 
+            public void  mouseReleased(MouseEvent e) {
+                panel.getShip().isThrusting = false;
             }
         });
 

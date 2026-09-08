@@ -9,6 +9,8 @@ public class Spaceship extends SimulationObject implements Collision {
     boolean hasLaunched;
     float launchForce;
 
+    public boolean isThrusting = false;
+
     public Spaceship(float mass, int size, int x, int y, int fuel, float force, double angle, float launchForce) {
         super(mass, size, x, y);
         this.fuel = fuel;
@@ -25,9 +27,14 @@ public class Spaceship extends SimulationObject implements Collision {
             hasLaunched = true;
         }
 
-        if (fuel > 0) {
-            Accelerate(force, this.angle);
-            fuel--;
+        if (isThrusting == true){
+            if (fuel > 0){
+                Accelerate(force, this.angle);
+                fuel--;
+
+            } else {
+                isThrusting = false;
+            }
         }
     }
 

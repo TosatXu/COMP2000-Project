@@ -3,6 +3,7 @@ import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
+import java.awt.Image;
 
 import Algorithms.NoMovement;
 
@@ -12,6 +13,8 @@ public class SimulationPanel extends Panel{
     private Planet mars;
     private boolean isRunning = false;
     private ArrayList<SimulationObject> objects = new ArrayList<SimulationObject>();
+    private Image offscreenImage;
+    private Graphics offscreenGraphics;
 
     public SimulationPanel(){
         resetSimulation();
@@ -71,23 +74,30 @@ public class SimulationPanel extends Panel{
         }
     }
 
+    @Override 
+    public void update(Graphics g) {
+        paint(g);
+    }
+
     @Override
     public void paint(Graphics g) {
-        g.setColor(Color.BLACK);
-        g.fillRect(0, 0, getWidth(), getHeight());
+        if(offscreenImage == null || offscreenImage.getWidth(this) != getWidth() || offscreenImage.getHeight(this) != getHeight()) {
+            offscreenImage = createImage(getWidth(), getHeight());
+            if(offscreenImage != null) {
+                offscreenGraphics = offscreenImage.getGraphics();
+            }
+        }
+        if(offscreenGraphics == null) {
+            return;
+        }
+        
+        offscreenGraphics.setColor(Color.BLACK);
+        offscreenGraphics.fillRect(0,0, getWidth(), getHeight());
 
-        PaintPlanet(Color.blue, earth, g);
-        PaintPlanet(Color.orange, mars, g);
+        PaintPlanet(Color.blue, earth, offscreenGraphics);
+        PaintPlanet(Color.orange, mars, offscreenGraphics);
 
-        // g.setColor(Color.RED);
-        // int shipCenterX = (int) ship.coordinates[0];
-        // int shipCenterY = (int) ship.coordinates[1];
-        // int shipHalf = ship.size/2;
-        // int[]shipXPoints = { shipCenterX, shipCenterX - shipHalf, shipCenterX + shipHalf };
-        // int[]shipYPoints = { shipCenterY - shipHalf, shipCenterY + shipHalf, shipCenterY + shipHalf };
-
-        // g.fillPolygon(shipXPoints, shipYPoints, 3);
-        Graphics2D g2d = (Graphics2D) g.create();
+        Graphics2D g2d = (Graphics2D) offscreenGraphics.create();
 
         int shipX = (int) ship.coordinates[0];
         int shipY = (int) ship.coordinates[1];
@@ -95,6 +105,14 @@ public class SimulationPanel extends Panel{
 
         g2d.translate(shipX, shipY);
         g2d.rotate(-ship.angle);
+
+        if(ship.isThrusting == true) {
+            g2d.setColor(Color.ORANGE);
+            int[] flameX = { -shipHalf, -shipHalf -10, -shipHalf };
+            int[] flameY = { -shipHalf/2, 0, shipHalf/2 };
+            g2d.fillPolygon(flameX, flameY, 3);
+        }
+
         g2d.setColor(Color.RED);
 
         int[] shipPointsX = { shipHalf+2, -shipHalf, -shipHalf };
@@ -103,6 +121,8 @@ public class SimulationPanel extends Panel{
         g2d.fillPolygon(shipPointsX, shipPointsY, 3);
         g2d.dispose();
 
+        g.drawImage(offscreenImage, 0, 0, this);
+        
     }
     
     public Spaceship getShip() {
