@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 
+import Algorithms.NoMovement;
+
 public class SimulationPanel extends Panel{
     private Spaceship ship;
     private Planet earth;
@@ -17,15 +19,15 @@ public class SimulationPanel extends Panel{
     }
 
     public void resetSimulation(){
-        ship = new Spaceship(500f, 12, 600, 450, 1000,0f, 200.0, 5500f);
+        ship = new Spaceship(500f, 12, 600, 420, 1000,0f, 200.0, 5500f);
         earth = new Planet(50000000000000f, 100, 600, 500);
         mars = new Planet(30000000000000f, 70, 800, 300);
 
         objects.clear();
+        objects.add(0, ship);
         objects.add(earth);
         objects.add(mars);
-        objects.add(ship);
-
+        
         isRunning = false;
     }
 
@@ -46,18 +48,27 @@ public class SimulationPanel extends Panel{
             return;
         }
 
-        //Calculate the gravitational force between every object in the simulation
         for (int i = 0; i < objects.size(); i++) {
+            //Calculate the gravitational force between every object in the simulation
             for (int j = 0; j < objects.size(); j++) {
                 if (i != j) {
                     objects.get(i).Gravity(objects.get(j));
                 }
             }
+
+            //Check ship collision with every other object
+            if (i > 0) {
+                if (ship.checkCollision(ship, objects.get(i)))
+                    ship.changeMovement(new NoMovement());
+            }
         }
 
         ship.Fly();
         ship.AdjustAngle();
-        ship.moveObject();
+        
+        for (SimulationObject object : objects) {
+            object.moveObject();
+        }
     }
 
     @Override

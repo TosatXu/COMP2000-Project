@@ -1,5 +1,7 @@
 import java.lang.Math;
 
+import Algorithms.ShipMovement;
+
 public class Spaceship extends SimulationObject implements Collision {
     int fuel;
     float force;
@@ -14,6 +16,7 @@ public class Spaceship extends SimulationObject implements Collision {
         this.angle = Math.toRadians(angle);
         hasLaunched = false;
         this.launchForce = launchForce;
+        movement = new ShipMovement();
     }
 
     public void Fly () {

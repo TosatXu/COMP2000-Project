@@ -1,8 +1,11 @@
+import Algorithms.*;
+
 public class SimulationObject {
     public float mass;
     public int size, x, y;
     public int[] coordinates;
     double[] velocity;
+    Movement movement;
 
     public SimulationObject(float mass, int size, int x, int y){
         this.mass = mass;
@@ -12,9 +15,11 @@ public class SimulationObject {
     }
 
     public void moveObject () {
-        //Change the position using the velocity
-        coordinates[0] += velocity[0];
-        coordinates[1] += velocity[1];
+        movement.move(coordinates, velocity);
+    }
+
+    public void changeMovement (Movement m) {
+        movement = m;
     }
 
     public void Gravity (SimulationObject target) {
