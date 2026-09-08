@@ -2,12 +2,14 @@ import java.awt.Panel;
 import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
 
 public class SimulationPanel extends Panel{
     private Spaceship ship;
     private Planet earth;
     private Planet mars;
     private boolean isRunning = false;
+    private ArrayList<SimulationObject> objects = new ArrayList<SimulationObject>();
 
     public SimulationPanel(){
         resetSimulation();
@@ -15,11 +17,16 @@ public class SimulationPanel extends Panel{
     }
 
     public void resetSimulation(){
-        ship = new Spaceship(500f, 12, 600, 450, 100,15f, 40.0, 5000f);
+        ship = new Spaceship(500f, 12, 600, 450, 1000,0f, 200.0, 5500f);
         earth = new Planet(50000000000000f, 100, 600, 500);
-        //mars = new Planet(30000000000000f, 70, 800, 300);
-        isRunning = false;
+        mars = new Planet(30000000000000f, 70, 800, 300);
 
+        objects.clear();
+        objects.add(earth);
+        objects.add(mars);
+        objects.add(ship);
+
+        isRunning = false;
     }
 
     public void startSimulation(){
@@ -38,8 +45,16 @@ public class SimulationPanel extends Panel{
         if(isRunning == false) {
             return;
         }
-        ship.Gravity(earth);
-        // ship.Gravity(mars);
+
+        //Calculate the gravitational force between every object in the simulation
+        for (int i = 0; i < objects.size(); i++) {
+            for (int j = 0; j < objects.size(); j++) {
+                if (i != j) {
+                    objects.get(i).Gravity(objects.get(j));
+                }
+            }
+        }
+
         ship.Fly();
         ship.AdjustAngle();
         ship.moveObject();
@@ -50,17 +65,9 @@ public class SimulationPanel extends Panel{
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, getWidth(), getHeight());
 
-        g.setColor(Color.BLUE);
-        int earthX = (int) (earth.coordinates[0] - earth.size / 2);
-        int earthY = (int) (earth.coordinates[1] - earth.size / 2);
-        g.fillOval(earthX, earthY, earth.size, earth.size);
+        PaintPlanet(Color.blue, earth, g);
+        PaintPlanet(Color.orange, mars, g);
 
-        // g.setColor(Color.orange);
-        // int marsX = (int) (mars.coordinates[0] - mars.size / 2);
-        // int marsY = (int) (mars.coordinates[1] - mars.size / 2);
-        // g.fillOval(marsX, marsY, mars.size, mars.size);
-
-        
         // g.setColor(Color.RED);
         // int shipCenterX = (int) ship.coordinates[0];
         // int shipCenterY = (int) ship.coordinates[1];
@@ -89,5 +96,13 @@ public class SimulationPanel extends Panel{
     
     public Spaceship getShip() {
         return ship;
+    }
+
+    public void PaintPlanet (Color colour, Planet planet, Graphics g) {
+        g.setColor(colour);
+        int planetX = (int) (planet.coordinates[0] - planet.size / 2);
+        int planetY = (int) (planet.coordinates[1] - planet.size / 2);
+        g.fillOval(planetX, planetY, planet.size, planet.size);
+        System.out.println(planet.coordinates[0] + ", " + planet.coordinates[1]);
     }
 }

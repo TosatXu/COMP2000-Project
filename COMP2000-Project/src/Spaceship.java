@@ -31,8 +31,8 @@ public class Spaceship extends SimulationObject implements Collision {
     public void AdjustAngle () {
         //Adjust the angle of movement based on the direction of travel
         this.angle = -Math.atan2(velocity[1], velocity[0]);
-        System.out.println("This angle: " + Math.toDegrees(this.angle));
-        System.out.println(velocity[0] + ", " + velocity[1]);
+        //System.out.println("This angle: " + Math.toDegrees(this.angle));
+        //System.out.println(velocity[0] + ", " + velocity[1]);
     }
 
     public void Launch (float launchForce) {

@@ -26,7 +26,7 @@ public class SimulationObject {
 
         double A = CalculateAngle(this.coordinates, target.coordinates);
 
-        System.out.println(Math.toDegrees(A));
+        //System.out.println(Math.toDegrees(A));
 
         Accelerate(F, A);
     }
