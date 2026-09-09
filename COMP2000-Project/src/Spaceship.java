@@ -4,6 +4,7 @@ import Algorithms.ShipMovement;
 
 public class Spaceship extends SimulationObject implements Collision {
     int fuel;
+    int maxFuel;
     float force;
     double angle;
     boolean hasLaunched;
@@ -14,6 +15,8 @@ public class Spaceship extends SimulationObject implements Collision {
     public Spaceship(float mass, int size, int x, int y, int fuel, float force, double angle, float launchForce) {
         super(mass, size, x, y);
         this.fuel = fuel;
+        this.maxFuel = fuel;
+
         this.force = force;
         this.angle = Math.toRadians(angle);
         hasLaunched = false;
@@ -43,6 +46,14 @@ public class Spaceship extends SimulationObject implements Collision {
         this.angle = -Math.atan2(velocity[1], velocity[0]);
         //System.out.println("This angle: " + Math.toDegrees(this.angle));
         //System.out.println(velocity[0] + ", " + velocity[1]);
+    }
+
+    public int getFuel() {
+        return fuel;
+    }
+
+    public int getMaxFuel() {
+        return maxFuel;
     }
 
     public void Launch (float launchForce) {

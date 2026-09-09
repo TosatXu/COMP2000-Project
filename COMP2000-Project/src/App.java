@@ -103,6 +103,14 @@ public class App {
 
         while(true) {
             panel.updatePhysics();
+
+            //update fuel percentage in control panel
+            int currentFuel = panel.getShip().getFuel();
+            int maxFuel = panel.getShip().getMaxFuel();
+            controlPanel.fuelLabel.setText("Fuel: " + currentFuel + "/" + maxFuel);
+            int percent = (currentFuel * 100) / maxFuel;
+            controlPanel.setFuelPercentage(percent);
+
             panel.repaint();
 
             try {
