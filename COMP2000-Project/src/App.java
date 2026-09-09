@@ -16,7 +16,7 @@ public class App {
         window.add(panel, BorderLayout.CENTER);
         window.add(controlPanel, BorderLayout.EAST);
 
-        window.setSize(800, 600);
+        window.setSize(1200, 900);
         window.setLocationRelativeTo(null);
 
         window.addWindowListener(new WindowAdapter() {

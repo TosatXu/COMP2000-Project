@@ -22,9 +22,9 @@ public class SimulationPanel extends Panel{
     }
 
     public void resetSimulation(){
-        ship = new Spaceship(500f, 12, 600, 420, 1000,0f, 27.0, 4000f);
-        earth = new Planet(50000000000000f, 100, 600, 500);
-        mars = new Planet(30000000000000f, 70, 800, 300);
+        ship = new Spaceship(500f, 12, 400, 420, 1000,10f, 90.0, 4000f);
+        earth = new Planet(50000000000000f, 100, 400, 500);
+        mars = new Planet(30000000000000f, 70, 600, 300);
 
         objects.clear();
         objects.add(0, ship);
@@ -51,19 +51,13 @@ public class SimulationPanel extends Panel{
             return;
         }
 
-        for (int i = 0; i < objects.size(); i++) {
-            //Calculate the gravitational force between every object in the simulation
-            for (int j = 0; j < objects.size(); j++) {
-                if (i != j) {
-                    objects.get(i).Gravity(objects.get(j));
-                }
-            }
-
+        for (int i = 1; i < objects.size(); i++) {
+            //Calculate the gravitational force between the ship and every object in the simulation
+            ship.Gravity(objects.get(i));
+        
             //Check ship collision with every other object
-            if (i > 0) {
-                if (ship.checkCollision(ship, objects.get(i)))
-                    ship.changeMovement(new NoMovement());
-            }
+            if (ship.checkCollision(ship, objects.get(i)))
+                ship.changeMovement(new NoMovement());
         }
 
         ship.Fly();
