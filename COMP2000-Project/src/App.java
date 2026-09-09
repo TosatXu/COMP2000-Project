@@ -31,31 +31,66 @@ public class App {
         controlPanel.engineButton.addMouseListener(new MouseAdapter()  {
             @Override
             public void mousePressed(MouseEvent e) {
+                panel.getShip().isThrusting = true;
+            }
+            @Override 
+            public void  mouseReleased(MouseEvent e) {
+                panel.getShip().isThrusting = false;
+            }
+        });
+
+        controlPanel.applyButton.addActionListener(e -> {
             try {
                 double angle = Double.parseDouble(controlPanel.angleField.getText());
+                float launchForce = Float.parseFloat(controlPanel.launchField.getText());
                 float force = Float.parseFloat(controlPanel.forceField.getText());
                 
-                if(angle < 0 || angle > 90) {
-                    System.out.println("Launch angle must be between 0 and 90 degrees.");
-                    return;
+                // clear previous error messages
+                controlPanel.statusLine1.setText("");
+                controlPanel.statusLine2.setText("");
+                controlPanel.statusLine3.setText("");
+
+                int errorCount = 0;
+                if (angle < 0 || angle > 90) {
+                    errorCount++;
+                    if(errorCount == 1) {
+                        controlPanel.statusLine1.setText("Invalid angle");
+                    }
                 }
-                if(force < 1 || force > 100) {
-                    System.out.println("Engine force must be between 1 and 100.");
+
+                if (launchForce < 1000 || launchForce > 10000) {
+                    errorCount++;
+                    if(errorCount == 1) {
+                        controlPanel.statusLine1.setText("Invalid launch force");
+                    } else if (errorCount == 2) {
+                        controlPanel.statusLine2.setText("Invalid launch force");
+                    }
+                }
+
+                if (force < 1 || force > 100) {
+                    errorCount++;
+                    if(errorCount == 1) {
+                        controlPanel.statusLine1.setText("Invalid engine force");
+                    } else if (errorCount == 2) {
+                        controlPanel.statusLine2.setText("Invalid engine force");
+                    } else {
+                        controlPanel.statusLine3.setText("Invalid engine force");
+                    }
+                }
+                if (errorCount > 0) {
                     return;
                 }
 
                 panel.getShip().setAngle(angle);
+                panel.getShip().setLaunchForce(launchForce);
                 panel.getShip().setEngineForce(force);
-                panel.getShip().isThrusting = true;
-            } catch (NumberFormatException ex) {
-                System.err.println("Invalid input, please enter valid numbers.");
-            
-            }
-        }
 
-            @Override 
-            public void  mouseReleased(MouseEvent e) {
-                panel.getShip().isThrusting = false;
+                controlPanel.statusLine1.setText("Settings applied successfully.");
+
+            } catch (NumberFormatException ex) {
+                controlPanel.statusLine1.setText("Invalid number");
+                controlPanel.statusLine2.setText("Please enter valid numbers.");
+                controlPanel.statusLine3.setText("");
             }
         });
 

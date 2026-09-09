@@ -62,4 +62,8 @@ public class Spaceship extends SimulationObject implements Collision {
     public void setEngineForce(float force) {
         this.force = force;
     }
+
+    public void setLaunchForce(float launchForce) {
+        this.launchForce = launchForce;
+    }
 }
