@@ -28,8 +28,15 @@ public class SimulationObject {
         double R = CalculateDistance(this.coordinates, target.coordinates);
 
         double F = G * ((this.mass * target.mass)/(R*R)); //Calculate gravitational force between this object and target object
-
-        double A = CalculateAngle(this.coordinates, target.coordinates);
+        
+        double A = 0f;
+        try {
+            A = CalculateAngle(this.coordinates, target.coordinates);
+        }
+        catch (ArithmeticException e) {
+            A = 90f;
+            System.out.println(e);
+        }
 
         //System.out.println(Math.toDegrees(A));
 
@@ -43,17 +50,11 @@ public class SimulationObject {
         return Math.sqrt(x*x + y*y);
     }
 
-    public double CalculateAngle (int[] coordinate1, int[] coordinate2) {
+    public double CalculateAngle (int[] coordinate1, int[] coordinate2) throws ArithmeticException {
         double x = -(double)((coordinate1[0]) - (coordinate2[0]));
         double y = -(double)((coordinate1[1]) - (coordinate2[1]));
 
-        if (x != 0) {
-            return -Math.atan2(y, x);
-        }
-        else if (y > 0) {
-            return Math.toRadians(-90);
-        }
-        return Math.toRadians(90);
+        return -Math.atan2(y, x);
     }
 
     public void Accelerate (double f, double angle) {

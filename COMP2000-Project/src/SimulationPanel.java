@@ -22,7 +22,7 @@ public class SimulationPanel extends Panel{
     }
 
     public void resetSimulation(){
-        ship = new Spaceship(500f, 12, 600, 420, 1000,0f, 200.0, 5500f);
+        ship = new Spaceship(500f, 12, 600, 420, 1000,0f, 27.0, 4000f);
         earth = new Planet(50000000000000f, 100, 600, 500);
         mars = new Planet(30000000000000f, 70, 800, 300);
 
@@ -45,7 +45,7 @@ public class SimulationPanel extends Panel{
     public boolean isRunning(){
         return isRunning;
     }
-
+ 
     public void updatePhysics() {
         if(isRunning == false) {
             return;
@@ -134,6 +134,6 @@ public class SimulationPanel extends Panel{
         int planetX = (int) (planet.coordinates[0] - planet.size / 2);
         int planetY = (int) (planet.coordinates[1] - planet.size / 2);
         g.fillOval(planetX, planetY, planet.size, planet.size);
-        System.out.println(planet.coordinates[0] + ", " + planet.coordinates[1]);
+        //System.out.println(planet.coordinates[0] + ", " + planet.coordinates[1]);
     }
 }
