@@ -11,6 +11,10 @@ public class App {
         SimulationPanel panel = new SimulationPanel();
         ControlPanel controlPanel = new ControlPanel();
 
+        panel.getPlanetName()
+            .forEach(planet -> controlPanel.planetChoice.add(planet));
+        
+
         window.setLayout(new BorderLayout());
 
         window.add(panel, BorderLayout.CENTER);

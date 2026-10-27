@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.awt.Image;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import Algorithms.NoMovement;
 
@@ -12,6 +14,7 @@ public class SimulationPanel extends Panel{
     private Planet earth;
     private Planet mars;
     private boolean isRunning = false;
+    
     private ArrayList<SimulationObject> objects = new ArrayList<SimulationObject>();
     private Image offscreenImage;
     private Graphics offscreenGraphics;
@@ -23,8 +26,8 @@ public class SimulationPanel extends Panel{
 
     public void resetSimulation(){
         ship = new Spaceship(500f, 12, 400, 420, 1000,10f, 90.0, 4000f);
-        earth = new Planet(50000000000000f, 100, 400, 500);
-        mars = new Planet(30000000000000f, 70, 600, 300);
+        earth = new Planet("Earth",50000000000000f, 100, 400, 500);
+        mars = new Planet("Mars", 30000000000000f, 70, 600, 300);
 
         objects.clear();
         objects.add(0, ship);
@@ -66,6 +69,27 @@ public class SimulationPanel extends Panel{
         for (SimulationObject object : objects) {
             object.moveObject();
         }
+    }
+    
+    public List<Planet> getPlanets() {
+        return objects.stream()
+                .filter(obj -> obj instanceof Planet)
+                .map(obj -> (Planet) obj)
+                .collect(Collectors.toList());
+    }
+
+    public List<String> getPlanetName() {
+        return objects.stream()
+                .filter(obj -> obj instanceof Planet)
+                .map(obj -> ((Planet) obj).getName())
+                .collect(Collectors.toList());
+    }
+
+    public List<Spaceship> getSpaceships() {
+        return objects.stream()
+                .filter(obj -> obj instanceof Spaceship)
+                .map(obj -> (Spaceship) obj)
+                .collect(Collectors.toList());
     }
 
     @Override 

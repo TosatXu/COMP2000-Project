@@ -19,6 +19,8 @@ public class ControlPanel extends Panel {
     public Label statusLine2;
     public Label statusLine3;
 
+    public Choice planetChoice;
+
 
     public ControlPanel() {
         setLayout(null);
@@ -111,6 +113,10 @@ public class ControlPanel extends Panel {
         statusLine3.setBounds(20, 560, 250, 20);
         statusLine3.setForeground(Color.WHITE);
         add(statusLine3);
+
+        planetChoice = new Choice();
+        planetChoice.setBounds(20, 620, 180, 25);
+        add(planetChoice);
 
     }
 
