@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.awt.Image;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import Algorithms.NoMovement;
@@ -14,14 +15,23 @@ public class SimulationPanel extends Panel{
     private Planet earth;
     private Planet mars;
     private boolean isRunning = false;
-    
+
     private ArrayList<SimulationObject> objects = new ArrayList<SimulationObject>();
+    
+    private float[][] stars = new float[150][3];
+    
     private Image offscreenImage;
     private Graphics offscreenGraphics;
 
     public SimulationPanel(){
+        Random random = new Random(7);
+        for (int i = 0; i < stars.length; i++) {
+            stars[i][0] = random.nextFloat();
+            stars[i][1] = random.nextFloat();
+            stars[i][2] = random.nextFloat();
+        }
+        
         resetSimulation();
-
     }
 
     public void resetSimulation(){
@@ -79,9 +89,8 @@ public class SimulationPanel extends Panel{
     }
 
     public List<String> getPlanetName() {
-        return objects.stream()
-                .filter(obj -> obj instanceof Planet)
-                .map(obj -> ((Planet) obj).getName())
+        return getPlanets().stream()
+                .map(Planet::getName)
                 .collect(Collectors.toList());
     }
 
@@ -91,6 +100,7 @@ public class SimulationPanel extends Panel{
                 .map(obj -> (Spaceship) obj)
                 .collect(Collectors.toList());
     }
+
 
     @Override 
     public void update(Graphics g) {
@@ -111,6 +121,17 @@ public class SimulationPanel extends Panel{
         
         offscreenGraphics.setColor(Color.BLACK);
         offscreenGraphics.fillRect(0,0, getWidth(), getHeight());
+
+        for (int i = 0; i < stars.length; i++) {
+            int x = (int) (stars[i][0] * getWidth());
+            int y = (int) (stars[i][1] * getHeight());
+
+            int size = (stars[i][2] > 0.8f) ? 4 : 1;
+            int brightness = (int) (155 + stars[i][2] * 100);
+
+            offscreenGraphics.setColor(new Color(brightness, brightness, brightness));
+            offscreenGraphics.fillOval(x, y, size, size);
+        }
 
         PaintPlanet(Color.blue, earth, offscreenGraphics);
         PaintPlanet(Color.orange, mars, offscreenGraphics);
@@ -141,6 +162,7 @@ public class SimulationPanel extends Panel{
 
         g.drawImage(offscreenImage, 0, 0, this);
         
+
     }
     
     public Spaceship getShip() {

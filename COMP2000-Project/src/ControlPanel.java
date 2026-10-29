@@ -20,6 +20,8 @@ public class ControlPanel extends Panel {
     public Label statusLine3;
 
     public Choice planetChoice;
+    public Choice shipChoice;
+    public Label stateLabel;
 
 
     public ControlPanel() {
@@ -114,10 +116,25 @@ public class ControlPanel extends Panel {
         statusLine3.setForeground(Color.WHITE);
         add(statusLine3);
 
+        // choose spaceship
+        Label shipLabel = new Label("Spaceship type:");
+        shipLabel.setBounds(20, 590, 150, 18);
+        shipLabel.setForeground(Color.WHITE);
+        add(shipLabel);
+ 
+        shipChoice = new Choice();
+        shipChoice.setBounds(20, 610, 180, 25);
+        add(shipChoice);
+ 
+        // choose the target planet
+        Label planetLabel = new Label("Target planet:");
+        planetLabel.setBounds(20, 645, 150, 18);
+        planetLabel.setForeground(Color.WHITE);
+        add(planetLabel);
+ 
         planetChoice = new Choice();
-        planetChoice.setBounds(20, 620, 180, 25);
+        planetChoice.setBounds(20, 665, 180, 25);
         add(planetChoice);
-
     }
 
     public void setFuelPercentage(int fuelPercentage) {
