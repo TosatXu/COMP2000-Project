@@ -5,10 +5,10 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.awt.Image;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import Algorithms.NoMovement;
 
 public class SimulationPanel extends Panel{
     private Spaceship ship;
@@ -36,8 +36,8 @@ public class SimulationPanel extends Panel{
 
     public void resetSimulation(){
         ship = new Spaceship(500f, 12, 400, 420, 1000,10f, 90.0, 4000f);
-        earth = new Planet("Earth",50000000000000f, 100, 400, 500);
-        mars = new Planet("Mars", 30000000000000f, 70, 600, 300);
+        earth = new Planet("Earth",50000000000000f, 100, 400, 500, Color.BLUE);
+        mars = new Planet("Mars", 30000000000000f, 70, 600, 300, Color.ORANGE);
 
         objects.clear();
         objects.add(0, ship);
@@ -64,15 +64,18 @@ public class SimulationPanel extends Panel{
             return;
         }
 
-        for (int i = 1; i < objects.size(); i++) {
-            //Calculate the gravitational force between the ship and every object in the simulation
-            ship.Gravity(objects.get(i));
-        
-            //Check ship collision with every other object
-            if (ship.checkCollision(ship, objects.get(i)))
-                ship.changeMovement(new NoMovement());
+        // [CHANGED] the old for-loop is replaced with a lambda / stream
+        if (!ship.isCrashed()) {
+            //Calculate the gravitational force between the ship and every planet
+            getPlanets().forEach(planet -> ship.Gravity(planet));
+ 
+            //Check ship collision with every planet and crash into the first one hit
+            getPlanets().stream()
+                    .filter(planet -> ship.checkCollision(ship, planet))
+                    .findFirst()
+                    .ifPresent(planet -> ship.crash(planet.getName()));
         }
-
+ 
         ship.Fly();
         ship.AdjustAngle();
         
@@ -80,27 +83,34 @@ public class SimulationPanel extends Panel{
             object.moveObject();
         }
     }
-    
-    public List<Planet> getPlanets() {
+ 
+    public <T extends SimulationObject> List<T> getObjectsOfType(Class<T> type) {
         return objects.stream()
-                .filter(obj -> obj instanceof Planet)
-                .map(obj -> (Planet) obj)
+                .filter(type::isInstance)
+                .map(type::cast)
                 .collect(Collectors.toList());
     }
-
+    
+    public List<Planet> getPlanets() {
+        return getObjectsOfType(Planet.class);
+    }
+ 
     public List<String> getPlanetName() {
         return getPlanets().stream()
                 .map(Planet::getName)
                 .collect(Collectors.toList());
     }
-
+ 
     public List<Spaceship> getSpaceships() {
-        return objects.stream()
-                .filter(obj -> obj instanceof Spaceship)
-                .map(obj -> (Spaceship) obj)
-                .collect(Collectors.toList());
+        return getObjectsOfType(Spaceship.class);
     }
-
+ 
+    public Map<String, Double> getPlanetDistances() {
+        return getPlanets().stream()
+                .collect(Collectors.toMap(
+                        Planet::getName,
+                        planet -> ship.CalculateDistance(ship.coordinates, planet.coordinates)));
+    }
 
     @Override 
     public void update(Graphics g) {
@@ -133,8 +143,8 @@ public class SimulationPanel extends Panel{
             offscreenGraphics.fillOval(x, y, size, size);
         }
 
-        PaintPlanet(Color.blue, earth, offscreenGraphics);
-        PaintPlanet(Color.orange, mars, offscreenGraphics);
+        earth.draw(offscreenGraphics);
+        mars.draw(offscreenGraphics);
 
         Graphics2D g2d = (Graphics2D) offscreenGraphics.create();
 

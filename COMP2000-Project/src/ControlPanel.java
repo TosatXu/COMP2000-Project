@@ -1,6 +1,6 @@
 import java.awt.*;
 
-public class ControlPanel extends Panel {
+public class ControlPanel extends Panel implements ShipObserver {
     public TextField angleField;
     public TextField forceField;
     public TextField launchField;
@@ -22,6 +22,7 @@ public class ControlPanel extends Panel {
     public Choice planetChoice;
     public Choice shipChoice;
     public Label stateLabel;
+    public Label distanceLabel;
 
 
     public ControlPanel() {
@@ -135,11 +136,28 @@ public class ControlPanel extends Panel {
         planetChoice = new Choice();
         planetChoice.setBounds(20, 665, 180, 25);
         add(planetChoice);
+
+        // distance to the chosen planet
+        distanceLabel = new Label("Distance: -");
+        distanceLabel.setBounds(20, 700, 180, 20);
+        distanceLabel.setForeground(Color.WHITE);
+        add(distanceLabel);
     }
 
     public void setFuelPercentage(int fuelPercentage) {
         this.fuelPercentage = fuelPercentage;
         repaint();
+    }
+
+    @Override
+    public void onFuelChanged(int fuel, int maxFuel) {
+        fuelLabel.setText("Fuel: " + fuel + "/" + maxFuel);
+        setFuelPercentage((fuel * 100) / maxFuel);
+    }
+ 
+    @Override
+    public void onCrash(String planetName) {
+        statusLine1.setText("Crashed into " + planetName);
     }
 
     @Override 

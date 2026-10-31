@@ -1,16 +1,21 @@
 import java.lang.Math;
+import java.util.ArrayList;
+import java.util.List;
 
 import Algorithms.ShipMovement;
+import Algorithms.NoMovement;
 
 public class Spaceship extends SimulationObject implements Collision {
     int fuel;
     int maxFuel;
     float force;
     double angle;
-    boolean hasLaunched;
     float launchForce;
 
     public boolean isThrusting = false;
+
+    private ShipState state;
+    private List<ShipObserver> observers = new ArrayList<>();
 
     public Spaceship(float mass, int size, int x, int y, int fuel, float force, double angle, float launchForce) {
         super(mass, size, x, y);
@@ -19,26 +24,42 @@ public class Spaceship extends SimulationObject implements Collision {
 
         this.force = force;
         this.angle = Math.toRadians(angle);
-        hasLaunched = false;
         this.launchForce = launchForce;
         movement = new ShipMovement();
+        state = new ReadyState();
     }
 
     public void Fly () {
-        if (!hasLaunched) {
-            Launch(launchForce);
-            hasLaunched = true;
-        }
+        state.update(this);
+    }
 
-        if (isThrusting == true){
-            if (fuel > 0){
-                Accelerate(force, this.angle);
-                fuel--;
+    public void setState(ShipState state) {
+        this.state = state;
+    }
 
-            } else {
-                isThrusting = false;
-            }
+    public boolean isCrashed() {
+        return state instanceof CrashedState;
+    }
+
+    public void addObserver(ShipObserver observer) {
+        observers.add(observer);
+        observer.onFuelChanged(fuel, maxFuel);
+    }
+ 
+    public void notifyFuelChanged() {
+        for (ShipObserver observer : observers) {
+            observer.onFuelChanged(fuel, maxFuel);
         }
+    }
+ 
+    public void crash(String planetName) {
+        if (isCrashed()) {
+            return;
+        }
+        setState(new CrashedState());
+        changeMovement(new NoMovement());
+        isThrusting = false;
+        observers.forEach(observer -> observer.onCrash(planetName));
     }
 
     public void AdjustAngle () {
@@ -66,15 +87,24 @@ public class Spaceship extends SimulationObject implements Collision {
         return distance <= radiusSum;
     }
 
-    public void setAngle(double angle) {
+    public void setAngle(double angle) throws InvalidSettingException {
+        if (angle < 0 || angle > 90) {
+            throw new InvalidSettingException("Invalid angle");
+        }
         this.angle = Math.toRadians(angle);
     }
-
-    public void setEngineForce(float force) {
+ 
+    public void setEngineForce(float force) throws InvalidSettingException {
+        if (force < 1 || force > 100) {
+            throw new InvalidSettingException("Invalid engine force");
+        }
         this.force = force;
     }
-
-    public void setLaunchForce(float launchForce) {
+ 
+    public void setLaunchForce(float launchForce) throws InvalidSettingException {
+        if (launchForce < 1000 || launchForce > 10000) {
+            throw new InvalidSettingException("Invalid launch force");
+        }
         this.launchForce = launchForce;
     }
 }
