@@ -1,6 +1,6 @@
 import java.awt.*;
 
-public class ControlPanel extends Panel {
+public class ControlPanel extends Panel implements ShipObserver {
     public TextField angleField;
     public TextField forceField;
     public TextField launchField;
@@ -18,6 +18,11 @@ public class ControlPanel extends Panel {
     public Label statusLine1;
     public Label statusLine2;
     public Label statusLine3;
+
+    public Choice planetChoice;
+    public Choice shipChoice;
+    public Label stateLabel;
+    public Label distanceLabel;
 
 
     public ControlPanel() {
@@ -112,11 +117,47 @@ public class ControlPanel extends Panel {
         statusLine3.setForeground(Color.WHITE);
         add(statusLine3);
 
+        // choose spaceship
+        Label shipLabel = new Label("Spaceship type:");
+        shipLabel.setBounds(20, 590, 150, 18);
+        shipLabel.setForeground(Color.WHITE);
+        add(shipLabel);
+ 
+        shipChoice = new Choice();
+        shipChoice.setBounds(20, 610, 180, 25);
+        add(shipChoice);
+ 
+        // choose the target planet
+        Label planetLabel = new Label("Target planet:");
+        planetLabel.setBounds(20, 645, 150, 18);
+        planetLabel.setForeground(Color.WHITE);
+        add(planetLabel);
+ 
+        planetChoice = new Choice();
+        planetChoice.setBounds(20, 665, 180, 25);
+        add(planetChoice);
+
+        // distance to the chosen planet
+        distanceLabel = new Label("Distance: -");
+        distanceLabel.setBounds(20, 700, 180, 20);
+        distanceLabel.setForeground(Color.WHITE);
+        add(distanceLabel);
     }
 
     public void setFuelPercentage(int fuelPercentage) {
         this.fuelPercentage = fuelPercentage;
         repaint();
+    }
+
+    @Override
+    public void onFuelChanged(int fuel, int maxFuel) {
+        fuelLabel.setText("Fuel: " + fuel + "/" + maxFuel);
+        setFuelPercentage((fuel * 100) / maxFuel);
+    }
+ 
+    @Override
+    public void onCrash(String planetName) {
+        statusLine1.setText("Crashed into " + planetName);
     }
 
     @Override 
