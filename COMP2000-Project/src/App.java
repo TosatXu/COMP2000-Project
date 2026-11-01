@@ -74,9 +74,8 @@ public class App {
  
                 // show the messages on the status lines
                 Label[] lines = { controlPanel.statusLine1, controlPanel.statusLine2, controlPanel.statusLine3 };
-                for (Label line : lines) {
-                    line.setText("");
-                }
+                
+                List.of(lines).forEach(line -> line.setText(""));
  
                 if (errors.isEmpty()) {
                     lines[0].setText("Settings applied successfully.");

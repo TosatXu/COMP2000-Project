@@ -79,9 +79,7 @@ public class SimulationPanel extends Panel{
         ship.Fly();
         ship.AdjustAngle();
         
-        for (SimulationObject object : objects) {
-            object.moveObject();
-        }
+        objects.forEach(SimulationObject::moveObject);
     }
  
     public <T extends SimulationObject> List<T> getObjectsOfType(Class<T> type) {
