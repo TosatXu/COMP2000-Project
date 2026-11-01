@@ -14,14 +14,13 @@ public class App {
         SimulationPanel panel = new SimulationPanel();
         ControlPanel controlPanel = new ControlPanel();
 
-        panel.getPlanetName()
+        panel.getDestinationName()
             .forEach(planet -> controlPanel.planetChoice.add(planet));
+        panel.setTargetPlanet(controlPanel.planetChoice.getSelectedItem());
 
         panel.getShipTypeName()
             .forEach(ship -> controlPanel.shipChoice.add(ship));
         
-        panel.getShip().addObserver(controlPanel);
-
         window.setLayout(new BorderLayout());
 
         window.add(panel, BorderLayout.CENTER);
@@ -101,6 +100,11 @@ public class App {
         Runnable resetAll = () -> {
             panel.resetSimulation();
             panel.getShip().addObserver(controlPanel);
+
+            Spaceship ship = panel.getShip();
+            controlPanel.angleField.setText(String.valueOf(ship.getStartAngle()));
+            controlPanel.launchField.setText(String.valueOf(ship.getLaunchForce()));
+            controlPanel.forceField.setText(String.valueOf(ship.getEngineForce()));
             controlPanel.statusLine1.setText("");
             controlPanel.statusLine2.setText("");
             controlPanel.statusLine3.setText("");
@@ -113,6 +117,11 @@ public class App {
             panel.setShipType(controlPanel.shipChoice.getSelectedItem());
             resetAll.run();
         });
+
+        controlPanel.planetChoice.addItemListener(e -> 
+            panel.setTargetPlanet(controlPanel.planetChoice.getSelectedItem()));
+            
+        resetAll.run();
 
         while(true) {
             panel.updatePhysics();

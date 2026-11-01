@@ -12,6 +12,7 @@ public class Spaceship extends SimulationObject implements Collision {
     float force;
     double angle;
     float launchForce;
+    double startAngle;
 
     public boolean isThrusting = false;
     public Color colour = Color.RED;
@@ -26,6 +27,7 @@ public class Spaceship extends SimulationObject implements Collision {
 
         this.force = force;
         this.angle = Math.toRadians(angle);
+        this.startAngle = angle;
         this.launchForce = launchForce;
         movement = new ShipMovement();
         state = new ReadyState();
@@ -43,6 +45,10 @@ public class Spaceship extends SimulationObject implements Collision {
         return state instanceof CrashedState;
     }
 
+    public boolean isFinished() {
+        return state instanceof CrashedState || state instanceof LandedState;
+    }
+
     public void addObserver(ShipObserver observer) {
         observers.add(observer);
         observer.onFuelChanged(fuel, maxFuel);
@@ -55,13 +61,35 @@ public class Spaceship extends SimulationObject implements Collision {
     }
  
     public void crash(String planetName) {
-        if (isCrashed()) {
+        if (isFinished()) {
             return;
         }
         setState(new CrashedState());
         changeMovement(new NoMovement());
         isThrusting = false;
         observers.forEach(observer -> observer.onCrash(planetName));
+    }
+
+    public void arrive(String planetName) {
+        if (isFinished()) {
+            return;
+        }
+        setState(new LandedState());
+        changeMovement(new NoMovement());
+        isThrusting = false;
+        observers.forEach(observer -> observer.onArrive(planetName));
+    }
+
+    public double getStartAngle() {
+        return startAngle;
+    }
+
+    public float getLaunchForce() {
+        return launchForce;
+    }
+
+    public float getEngineForce() {
+        return force;
     }
 
     public void AdjustAngle () {
