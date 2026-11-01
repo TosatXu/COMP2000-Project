@@ -16,6 +16,9 @@ public class App {
 
         panel.getPlanetName()
             .forEach(planet -> controlPanel.planetChoice.add(planet));
+
+        panel.getShipTypeName()
+            .forEach(ship -> controlPanel.shipChoice.add(ship));
         
         panel.getShip().addObserver(controlPanel);
 
@@ -95,14 +98,20 @@ public class App {
 
         controlPanel.startButton.addActionListener(e -> panel.startSimulation());
         controlPanel.pauseButton.addActionListener(e -> panel.pauseSimulation());
-        controlPanel.resetButton.addActionListener(e -> {
+        Runnable resetAll = () -> {
             panel.resetSimulation();
             panel.getShip().addObserver(controlPanel);
             controlPanel.statusLine1.setText("");
             controlPanel.statusLine2.setText("");
             controlPanel.statusLine3.setText("");
-
+ 
             panel.repaint();
+        };
+
+        controlPanel.resetButton.addActionListener(e -> resetAll.run());
+        controlPanel.shipChoice.addItemListener(e -> {
+            panel.setShipType(controlPanel.shipChoice.getSelectedItem());
+            resetAll.run();
         });
 
         while(true) {

@@ -1,6 +1,7 @@
 import java.lang.Math;
 import java.util.ArrayList;
 import java.util.List;
+import java.awt.Color;
 
 import Algorithms.ShipMovement;
 import Algorithms.NoMovement;
@@ -13,6 +14,7 @@ public class Spaceship extends SimulationObject implements Collision {
     float launchForce;
 
     public boolean isThrusting = false;
+    public Color colour = Color.RED;
 
     private ShipState state;
     private List<ShipObserver> observers = new ArrayList<>();

@@ -8,22 +8,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
+import java.util.LinkedHashMap;
+import java.util.function.Supplier;
 
 
 public class SimulationPanel extends Panel{
     private Spaceship ship;
-    private Planet earth;
-    private Planet mars;
     private boolean isRunning = false;
 
     private ArrayList<SimulationObject> objects = new ArrayList<SimulationObject>();
     
     private float[][] stars = new float[150][3];
     
+    private Map<String, Supplier<Spaceship>> shipTypes = new LinkedHashMap<>();
+    private String selectedShipType = "Rocket";
+
     private Image offscreenImage;
     private Graphics offscreenGraphics;
 
     public SimulationPanel(){
+        shipTypes.put("Rocket", () -> new Rocket(400, 420));
+        shipTypes.put("Fighter", () -> new Fighter(400, 420));
+        shipTypes.put("Cargo", () -> new Cargo(400, 420));
+
         Random random = new Random(7);
         for (int i = 0; i < stars.length; i++) {
             stars[i][0] = random.nextFloat();
@@ -35,14 +42,14 @@ public class SimulationPanel extends Panel{
     }
 
     public void resetSimulation(){
-        ship = new Spaceship(500f, 12, 400, 420, 1000,10f, 90.0, 4000f);
-        earth = new Planet("Earth",50000000000000f, 100, 400, 500, Color.BLUE);
-        mars = new Planet("Mars", 30000000000000f, 70, 600, 300, Color.ORANGE);
+        ship = shipTypes.get(selectedShipType).get();
 
         objects.clear();
         objects.add(0, ship);
-        objects.add(earth);
-        objects.add(mars);
+        objects.add(new Planet("Earth", 50000000000000f, 100, 400, 500, Color.BLUE));
+        objects.add(new Planet("Mars", 30000000000000f, 70, 600, 300, Color.ORANGE));
+        objects.add(new Planet("Moon", 10000000000000f, 40, 200, 250, Color.LIGHT_GRAY));
+        objects.add(new Planet("Jupiter", 80000000000000f, 130, 720, 650, new Color(200, 150, 100)));
         
         isRunning = false;
     }
@@ -55,6 +62,14 @@ public class SimulationPanel extends Panel{
         isRunning = false;
     }
 
+    public List<String> getShipTypeName() {
+        return shipTypes.keySet().stream().collect(Collectors.toList());
+    }
+
+    public void setShipType(String name) {
+        selectedShipType = name;
+    }
+
     public boolean isRunning(){
         return isRunning;
     }
@@ -64,7 +79,6 @@ public class SimulationPanel extends Panel{
             return;
         }
 
-        // [CHANGED] the old for-loop is replaced with a lambda / stream
         if (!ship.isCrashed()) {
             //Calculate the gravitational force between the ship and every planet
             getPlanets().forEach(planet -> ship.Gravity(planet));
@@ -143,8 +157,7 @@ public class SimulationPanel extends Panel{
             offscreenGraphics.fillOval(x, y, size, size);
         }
 
-        earth.draw(offscreenGraphics);
-        mars.draw(offscreenGraphics);
+        getPlanets().forEach(planet -> planet.draw(offscreenGraphics));
 
         Graphics2D g2d = (Graphics2D) offscreenGraphics.create();
 
@@ -162,7 +175,7 @@ public class SimulationPanel extends Panel{
             g2d.fillPolygon(flameX, flameY, 3);
         }
 
-        g2d.setColor(Color.RED);
+        g2d.setColor(ship.colour);
 
         int[] shipPointsX = { shipHalf+2, -shipHalf, -shipHalf };
         int[] shipPointsY = { 0, -shipHalf, shipHalf };
