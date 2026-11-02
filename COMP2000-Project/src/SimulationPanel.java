@@ -21,6 +21,8 @@ public class SimulationPanel extends Panel{
     private boolean isRunning = false;
     private String targetPlanet = "Mars";
 
+    private Asteroid asteroid1;
+
 
     private ArrayList<SimulationObject> objects = new ArrayList<SimulationObject>();
     
@@ -56,6 +58,8 @@ public class SimulationPanel extends Panel{
         objects.add(new Planet("Mars", 30000000000000f, 70, 640, 540, Color.ORANGE));
         objects.add(new Planet("Moon", 10000000000000f, 40, 300, 400, Color.LIGHT_GRAY));
         objects.add(new Planet("Jupiter", 80000000000000f, 130, 780, 150, new Color(200, 150, 100)));
+        asteroid1 = new Asteroid(100000f, 25, 200, 150, 1.5, 1.0, Color.LIGHT_GRAY);
+        objects.add(asteroid1);
         
         isRunning = false;
     }
@@ -119,6 +123,13 @@ public class SimulationPanel extends Panel{
  
         ship.Fly();
         ship.AdjustAngle();
+
+        for(SimulationObject obj : objects) {
+            if(obj instanceof Asteroid) {
+                Asteroid asteroid = (Asteroid) obj;
+                getPlanets().forEach(planet -> asteroid.Gravity(planet));
+            }
+        }
         
         objects.forEach(SimulationObject::moveObject);
     }
@@ -181,6 +192,8 @@ public class SimulationPanel extends Panel{
             offscreenGraphics.setColor(new Color(brightness, brightness, brightness));
             offscreenGraphics.fillOval(x, y, size, size);
         }
+
+        asteroid1.draw(offscreenGraphics);
 
         getPlanets().forEach(planet -> planet.draw(offscreenGraphics));
 
