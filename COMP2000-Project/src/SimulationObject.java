@@ -6,16 +6,26 @@ public class SimulationObject {
     public int[] coordinates;
     double[] velocity;
     Movement movement;
+    SimulationObject parent;
 
     public SimulationObject(float mass, int size, int x, int y){
         this.mass = mass;
         this.size = size;
         coordinates = new int[]{x, y};
         velocity = new double[]{0, 0};
+        parent = this;
+    }
+
+    public SimulationObject(float mass, int size, int x, int y, SimulationObject parent){
+        this.mass = mass;
+        this.size = size;
+        coordinates = new int[]{x, y};
+        velocity = new double[]{0, 0};
+        this.parent = parent;
     }
 
     public void moveObject () {
-        movement.move(coordinates, velocity);
+        movement.move(coordinates, velocity, parent.velocity);
     }
 
     public void changeMovement (Movement m) {
@@ -32,6 +42,7 @@ public class SimulationObject {
         double A = 0f;
         try {
             A = CalculateAngle(this.coordinates, target.coordinates);
+            System.out.println(Math.toDegrees(A));
         }
         catch (ArithmeticException e) {
             A = 90f;

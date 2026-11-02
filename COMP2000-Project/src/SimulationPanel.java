@@ -36,8 +36,8 @@ public class SimulationPanel extends Panel{
 
     public void resetSimulation(){
         ship = new Spaceship(500f, 12, 400, 420, 1000,10f, 90.0, 4000f);
-        earth = new Planet("Earth",50000000000000f, 100, 400, 500, Color.BLUE);
-        mars = new Planet("Mars", 30000000000000f, 70, 600, 300, Color.ORANGE);
+        earth = new Planet("Earth",50000000000000f, 100, 400, 500, Color.BLUE, 0);
+        mars = new Planet("Mars", 30000000000000f, 70, 600, 500, Color.ORANGE, earth, 200);
 
         objects.clear();
         objects.add(0, ship);
@@ -80,6 +80,7 @@ public class SimulationPanel extends Panel{
         ship.AdjustAngle();
         
         objects.forEach(SimulationObject::moveObject);
+        mars.orbit();
     }
  
     public <T extends SimulationObject> List<T> getObjectsOfType(Class<T> type) {
