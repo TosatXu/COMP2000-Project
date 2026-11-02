@@ -161,6 +161,11 @@ public class ControlPanel extends Panel implements ShipObserver {
     }
 
     @Override 
+    public void onArrive(String planetName) {
+        statusLine1.setText("Arrived at " + planetName);
+    }
+
+    @Override 
     public void paint(Graphics g) {
         super.paint(g);
         g.setColor(Color.WHITE);

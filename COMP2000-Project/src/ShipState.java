@@ -27,3 +27,9 @@ class CrashedState implements ShipState {
     public void update(Spaceship ship) {
     }
 }
+
+// ship has reached the target planet
+class LandedState implements ShipState {
+    public void update(Spaceship ship) {
+    }
+}
