@@ -57,7 +57,11 @@ public class SimulationPanel extends Panel{
         objects.add(new Planet("Moon", 10000000000000f, 40, 300, 400, Color.LIGHT_GRAY));
         objects.add(new Planet("Jupiter", 80000000000000f, 130, 780, 150, new Color(200, 150, 100)));
         
-        List<Asteroid> generatedAsteroids = IntStream.range(0,5)
+        //range is 5-20
+        int rAstCount = (int) (Math.random() * 16) + 5; 
+        
+        List<Asteroid> generatedAsteroids = IntStream.range(0,rAstCount)
+            .parallel()
             .mapToObj(i -> {
                 int rAstPosx = (int) (Math.random() * 1200);
                 int rAstPosy = (int) (Math.random() * 900);
