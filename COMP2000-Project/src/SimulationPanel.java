@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.LinkedHashMap;
 import java.util.function.Supplier;
 
@@ -20,7 +21,6 @@ public class SimulationPanel extends Panel{
     private Spaceship ship;
     private boolean isRunning = false;
     private String targetPlanet = "Mars";
-
 
     private ArrayList<SimulationObject> objects = new ArrayList<SimulationObject>();
     
@@ -56,6 +56,23 @@ public class SimulationPanel extends Panel{
         objects.add(new Planet("Mars", 30000000000000f, 70, 640, 540, Color.ORANGE));
         objects.add(new Planet("Moon", 10000000000000f, 40, 300, 400, Color.LIGHT_GRAY));
         objects.add(new Planet("Jupiter", 80000000000000f, 130, 780, 150, new Color(200, 150, 100)));
+        
+        //range is 5-20
+        int rAstCount = (int) (Math.random() * 16) + 5; 
+        
+        List<Asteroid> generatedAsteroids = IntStream.range(0,rAstCount)
+            .parallel()
+            .mapToObj(i -> {
+                int rAstPosx = (int) (Math.random() * 1200);
+                int rAstPosy = (int) (Math.random() * 900);
+                double rAstVx = (Math.random() * 6.0) - 3.0;
+                double rAstVy = (Math.random() * 6.0) - 3.0;
+
+                return new Asteroid(100000f, 25, rAstPosx, rAstPosy, rAstVx, rAstVy, Color.LIGHT_GRAY);
+            })
+            .collect(Collectors.toList());
+
+        objects.addAll(generatedAsteroids);
         
         isRunning = false;
     }
@@ -115,6 +132,10 @@ public class SimulationPanel extends Panel{
                             ship.crash(planet.getName());
                         }
                     });
+            getObjectsOfType(Asteroid.class).stream()
+                .filter(asteroid -> ship.checkCollision(ship, asteroid))
+                .findFirst()
+                .ifPresent(asteroid -> ship.crash("An Asteroid"));
         }
  
         ship.Fly();
@@ -181,6 +202,8 @@ public class SimulationPanel extends Panel{
             offscreenGraphics.setColor(new Color(brightness, brightness, brightness));
             offscreenGraphics.fillOval(x, y, size, size);
         }
+
+        getObjectsOfType(Asteroid.class).forEach(asteroid -> asteroid.draw(offscreenGraphics));
 
         getPlanets().forEach(planet -> planet.draw(offscreenGraphics));
 
