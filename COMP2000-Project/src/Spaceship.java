@@ -8,13 +8,12 @@ import Algorithms.ShipMovement;
 import Algorithms.CrashMovement;
 //import Algorithms.NoMovement;
 
-public class Spaceship extends SimulationObject implements Collision {
+public class Spaceship extends SimulationObject {
     int fuel;
     int maxFuel;
     float force;
     double angle;
     float launchForce;
-    SimulationObject collisionObject;
 
     public boolean isThrusting = false;
     public Color colour = Color.RED;
@@ -78,6 +77,7 @@ public class Spaceship extends SimulationObject implements Collision {
             return;
         }
         setState(new LandedState());
+        parent = collisionObject;
         changeMovement(new CrashMovement());
         isThrusting = false;
         observers.forEach(observer -> observer.onArrive(planetName));
@@ -114,12 +114,7 @@ public class Spaceship extends SimulationObject implements Collision {
         Accelerate(launchForce, this.angle);
     }
 
-    public boolean checkCollision(SimulationObject obj1, SimulationObject obj2) {
-        double distance = obj1.CalculateDistance(obj1.coordinates, obj2.coordinates);
-        double radiusSum = (obj1.size / 2.0) + (obj2.size / 2.0);
-        collisionObject = obj2;
-        return distance <= radiusSum;
-    }
+
 
     public void setAngle(double angle) throws InvalidSettingException {
         if (angle < 0 || angle > 90) {

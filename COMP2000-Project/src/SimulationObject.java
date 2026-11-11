@@ -1,6 +1,6 @@
 import Algorithms.*;
 
-public class SimulationObject {    
+public class SimulationObject implements Collision {    
     public String name;
     public float mass;
     public int size, x, y;
@@ -8,6 +8,7 @@ public class SimulationObject {
     double[] velocity;
     Movement movement;
     SimulationObject parent;
+    SimulationObject collisionObject;
 
     public SimulationObject(float mass, int size, int x, int y){
         this.mass = mass;
@@ -73,5 +74,12 @@ public class SimulationObject {
         //Calculate x and y axis of acceleration using the angle of movement and applying the acceleration to the velocity
         velocity[0] += (f * Math.cos(angle))/mass;
         velocity[1] += -(f * Math.sin(angle))/mass;
+    }
+    
+    public boolean checkCollision(SimulationObject obj1, SimulationObject obj2) {
+        double distance = obj1.CalculateDistance(obj1.coordinates, obj2.coordinates);
+        double radiusSum = (obj1.size / 2.0) + (obj2.size / 2.0);
+        collisionObject = obj2;
+        return distance <= radiusSum;
     }
 }
