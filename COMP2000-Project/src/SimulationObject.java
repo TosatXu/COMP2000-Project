@@ -1,6 +1,7 @@
 import Algorithms.*;
 
-public class SimulationObject {
+public class SimulationObject {    
+    public String name;
     public float mass;
     public int size, x, y;
     public int[] coordinates;
@@ -42,7 +43,7 @@ public class SimulationObject {
         double A = 0f;
         try {
             A = CalculateAngle(this.coordinates, target.coordinates);
-            System.out.println(Math.toDegrees(A));
+            //System.out.println(Math.toDegrees(A));
         }
         catch (ArithmeticException e) {
             A = 90f;

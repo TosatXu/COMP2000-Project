@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.LinkedHashMap;
 import java.util.function.Supplier;
-
+import Algorithms.*;
 
 public class SimulationPanel extends Panel{
     private String launchPlanet = "Earth";
@@ -52,10 +52,11 @@ public class SimulationPanel extends Panel{
         ship = shipTypes.get(selectedShipType).get();
 
         objects.clear();
-        earth = new Planet("Earth", 50000000000000f, 100, earthX, earthY, Color.BLUE, 0f);
-        mars = new Planet("Mars", 30000000000000f, 70, 640, 540, Color.ORANGE, 0f);
-        moon = new Planet("Moon", 10000000000000f, 40, earthX + 100, earthY, Color.LIGHT_GRAY, earth, 4f);
-        jupiter = new Planet("Jupiter", 80000000000000f, 130, 780, 150, new Color(200, 150, 100), 0f);
+        
+        mars = new Planet("Mars", 30000000000000f, 70, 450, 540, Color.ORANGE);
+        earth = new Planet("Earth", 50000000000000f, 100, earthX, earthY, Color.BLUE);
+        moon = new Planet("Moon", 10000000000000f, 40, earthX + 100, earthY, Color.LIGHT_GRAY, earth, 100f);
+        jupiter = new Planet("Jupiter", 80000000000000f, 130, 780, 150, new Color(200, 150, 100));
         objects.add(0, ship);
         objects.add(earth);
         objects.add(mars);
@@ -124,7 +125,9 @@ public class SimulationPanel extends Panel{
 
         if (!ship.isFinished()) { // changed to finished check to allow for landing on planets
             //Calculate the gravitational force between the ship and every planet
-            getPlanets().forEach(planet -> ship.Gravity(planet));
+            getPlanets().forEach(planet -> {
+                ship.Gravity(planet);
+                planet.orbit(); });
  
             //Check ship collision with every planet and crash into the first one hit
             getPlanets().stream()
@@ -142,15 +145,13 @@ public class SimulationPanel extends Panel{
                 .findFirst()
                 .ifPresent(asteroid -> ship.crash("An Asteroid"));
         }
+        else {
+            objects.forEach(object -> object.changeMovement(new NoMovement()));
+        }
  
         ship.Fly();
         ship.AdjustAngle();
-        
-        for (SimulationObject object : objects) {
-            object.moveObject();
-            
-        }
-        moon.orbit();
+        objects.forEach(SimulationObject::moveObject);
     }
  
     public <T extends SimulationObject> List<T> getObjectsOfType(Class<T> type) {

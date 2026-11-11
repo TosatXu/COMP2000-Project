@@ -6,7 +6,7 @@ import java.awt.Color;
 import Algorithms.ShipMovement;
 //import Algorithms.ChildMovement;
 import Algorithms.CrashMovement;
-import Algorithms.NoMovement;
+//import Algorithms.NoMovement;
 
 public class Spaceship extends SimulationObject implements Collision {
     int fuel;
@@ -78,7 +78,7 @@ public class Spaceship extends SimulationObject implements Collision {
             return;
         }
         setState(new LandedState());
-        changeMovement(new NoMovement());
+        changeMovement(new CrashMovement());
         isThrusting = false;
         observers.forEach(observer -> observer.onArrive(planetName));
     }

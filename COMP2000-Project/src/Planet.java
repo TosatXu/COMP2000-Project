@@ -2,17 +2,16 @@ import Algorithms.*;
 import java.awt.*;
 
 public class Planet extends SimulationObject {
-    private String name;
     private Color colour;
     double orbitalRadius;
     double orbitPeriod;
 
-    public Planet (String name, float mass, int size, int x, int y, Color colour, double orbitPeriod) {
+    public Planet (String name, float mass, int size, int x, int y, Color colour) {
         super(mass, size, x, y);
         movement = new NoMovement();
         this.name = name;
         this.colour = colour;
-        this.orbitPeriod = orbitPeriod;
+        orbitPeriod = 0;
         orbitalRadius = 0;
     }
 
@@ -26,10 +25,13 @@ public class Planet extends SimulationObject {
     }
 
     public void orbit () {
-        double v = (2 * Math.PI * orbitalRadius)/(orbitPeriod*60);
-        double angle = CalculateAngle(this.coordinates, parent.coordinates) + Math.toRadians(90.5);
-        velocity[0] = v * Math.cos(angle) * -1;
-        velocity[1] = v * Math.sin(angle);
+        //System.out.println(coordinates[0] + ", " + coordinates[1]);
+        if (orbitPeriod > 0) {
+            double v = (2 * Math.PI * orbitalRadius)/orbitPeriod;
+            double angle = CalculateAngle(this.coordinates, parent.coordinates) + Math.toRadians(90.5);
+            velocity[0] = v * Math.cos(angle) * -1;
+            velocity[1] = v * Math.sin(angle);
+        }
     }
 
     public String getName() {
