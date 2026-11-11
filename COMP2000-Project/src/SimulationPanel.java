@@ -88,7 +88,7 @@ public class SimulationPanel extends Panel{
     }
 
     public void pauseSimulation(){
-        isRunning = false;
+        isRunning = !isRunning;
     }
 
     public List<String> getShipTypeName() {
@@ -125,9 +125,8 @@ public class SimulationPanel extends Panel{
 
         if (!ship.isFinished()) { // changed to finished check to allow for landing on planets
             //Calculate the gravitational force between the ship and every planet
-            getPlanets().forEach(planet -> {
-                ship.Gravity(planet);
-                planet.orbit(); });
+            getPlanets().forEach(planet -> 
+                ship.Gravity(planet));
  
             //Check ship collision with every planet and crash into the first one hit
             getPlanets().stream()
@@ -145,13 +144,14 @@ public class SimulationPanel extends Panel{
                 .findFirst()
                 .ifPresent(asteroid -> ship.crash("An Asteroid"));
         }
-        else {
-            objects.forEach(object -> object.changeMovement(new NoMovement()));
-        }
+        // else {
+        //     objects.forEach(object -> object.changeMovement(new NoMovement()));
+        // }
  
         ship.Fly();
         ship.AdjustAngle();
         objects.forEach(SimulationObject::moveObject);
+        getPlanets().forEach(Planet::orbit);
     }
  
     public <T extends SimulationObject> List<T> getObjectsOfType(Class<T> type) {
