@@ -4,27 +4,30 @@ import java.awt.*;
 public class Planet extends SimulationObject {
     private String name;
     private Color colour;
-    float orbitalRadius;
+    double orbitalRadius;
+    double orbitPeriod;
 
-    public Planet (String name, float mass, int size, int x, int y, Color colour, float orbitalRadius) {
+    public Planet (String name, float mass, int size, int x, int y, Color colour, double orbitPeriod) {
         super(mass, size, x, y);
         movement = new NoMovement();
         this.name = name;
         this.colour = colour;
-        this.orbitalRadius = orbitalRadius;
+        this.orbitPeriod = orbitPeriod;
+        orbitalRadius = 0;
     }
 
-    public Planet (String name, float mass, int size, int x, int y, Color colour, SimulationObject parent, float orbitalRadius) {
+    public Planet (String name, float mass, int size, int x, int y, Color colour, SimulationObject parent, double orbitPeriod) {
         super(mass, size, x, y, parent);
         movement = new ChildMovement();
         this.name = name;
         this.colour = colour;
-        this.orbitalRadius = orbitalRadius;
+        this.orbitPeriod = orbitPeriod;
+        orbitalRadius = CalculateDistance(coordinates, parent.coordinates);
     }
 
     public void orbit () {
-        double v = (2 * Math.PI * orbitalRadius)/100;
-        double angle = CalculateAngle(this.coordinates, parent.coordinates) + Math.toRadians(90);
+        double v = (2 * Math.PI * orbitalRadius)/(orbitPeriod*60);
+        double angle = CalculateAngle(this.coordinates, parent.coordinates) + Math.toRadians(90.5);
         velocity[0] = v * Math.cos(angle) * -1;
         velocity[1] = v * Math.sin(angle);
     }

@@ -14,6 +14,7 @@ public class SimulationPanel extends Panel{
     private Spaceship ship;
     private Planet earth;
     private Planet mars;
+    private Planet sun;
     private boolean isRunning = false;
 
     private ArrayList<SimulationObject> objects = new ArrayList<SimulationObject>();
@@ -35,14 +36,18 @@ public class SimulationPanel extends Panel{
     }
 
     public void resetSimulation(){
-        ship = new Spaceship(500f, 12, 400, 420, 1000,10f, 90.0, 4000f);
-        earth = new Planet("Earth",50000000000000f, 100, 400, 500, Color.BLUE, 0);
-        mars = new Planet("Mars", 30000000000000f, 70, 600, 500, Color.ORANGE, earth, 200);
+        ship = new Spaceship(500f, 12, 400, 400, 1000,10f, 90.0, 4000f);
+        
+        sun = new Planet("Sun", 100000000000000f, 150, 400, 500, Color.YELLOW, 0);
+        earth = new Planet("Earth",40000000000000f, 70, 700, 500, Color.BLUE, sun, 8);
+        mars = new Planet("Moon", 20000000000000f, 30, 820, 500, Color.WHITE, earth, 2);
+        
 
         objects.clear();
         objects.add(0, ship);
         objects.add(earth);
         objects.add(mars);
+        objects.add(sun);
         
         isRunning = false;
     }
@@ -80,6 +85,7 @@ public class SimulationPanel extends Panel{
         ship.AdjustAngle();
         
         objects.forEach(SimulationObject::moveObject);
+        earth.orbit();
         mars.orbit();
     }
  
@@ -144,6 +150,7 @@ public class SimulationPanel extends Panel{
 
         earth.draw(offscreenGraphics);
         mars.draw(offscreenGraphics);
+        sun.draw(offscreenGraphics);
 
         Graphics2D g2d = (Graphics2D) offscreenGraphics.create();
 
