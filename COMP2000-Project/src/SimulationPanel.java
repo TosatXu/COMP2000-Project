@@ -15,8 +15,9 @@ import java.util.function.Supplier;
 
 public class SimulationPanel extends Panel{
     private String launchPlanet = "Earth";
-    private static final int earthX = 180;
-    private static final int earthY = 720;
+    private static final int earthX = 200;
+    private static final int earthY = 600;
+    private Planet earth, mars, moon, jupiter;
 
     private Spaceship ship;
     private boolean isRunning = false;
@@ -51,11 +52,15 @@ public class SimulationPanel extends Panel{
         ship = shipTypes.get(selectedShipType).get();
 
         objects.clear();
+        earth = new Planet("Earth", 50000000000000f, 100, earthX, earthY, Color.BLUE, 0f);
+        mars = new Planet("Mars", 30000000000000f, 70, 640, 540, Color.ORANGE, 0f);
+        moon = new Planet("Moon", 10000000000000f, 40, earthX + 100, earthY, Color.LIGHT_GRAY, earth, 4f);
+        jupiter = new Planet("Jupiter", 80000000000000f, 130, 780, 150, new Color(200, 150, 100), 0f);
         objects.add(0, ship);
-        objects.add(new Planet("Earth", 50000000000000f, 100, earthX, earthY, Color.BLUE, 0f));
-        objects.add(new Planet("Mars", 30000000000000f, 70, 640, 540, Color.ORANGE, 0f));
-        objects.add(new Planet("Moon", 10000000000000f, 40, 300, 400, Color.LIGHT_GRAY, 0f));
-        objects.add(new Planet("Jupiter", 80000000000000f, 130, 780, 150, new Color(200, 150, 100), 0f));
+        objects.add(earth);
+        objects.add(mars);
+        objects.add(moon);
+        objects.add(jupiter);
         
         //range is 5-20
         int rAstCount = (int) (Math.random() * 16) + 5; 
@@ -145,6 +150,7 @@ public class SimulationPanel extends Panel{
             object.moveObject();
             
         }
+        moon.orbit();
     }
  
     public <T extends SimulationObject> List<T> getObjectsOfType(Class<T> type) {

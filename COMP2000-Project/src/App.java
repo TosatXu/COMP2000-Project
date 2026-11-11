@@ -101,7 +101,7 @@ public class App {
             panel.getShip().addObserver(controlPanel);
 
             Spaceship ship = panel.getShip();
-            controlPanel.angleField.setText(String.valueOf(ship.getStartAngle()));
+            //controlPanel.angleField.setText(String.valueOf(ship.getStartAngle()));
             controlPanel.launchField.setText(String.valueOf(ship.getLaunchForce()));
             controlPanel.forceField.setText(String.valueOf(ship.getEngineForce()));
             controlPanel.statusLine1.setText("");
