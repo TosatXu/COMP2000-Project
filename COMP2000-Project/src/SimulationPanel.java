@@ -8,23 +8,35 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.LinkedHashMap;
+import java.util.function.Supplier;
 
 
 public class SimulationPanel extends Panel{
+    private String launchPlanet = "Earth";
+    private static final int earthX = 180;
+    private static final int earthY = 720;
+
     private Spaceship ship;
-    private Planet earth;
-    private Planet mars;
-    private Planet sun;
     private boolean isRunning = false;
+    private String targetPlanet = "Mars";
 
     private ArrayList<SimulationObject> objects = new ArrayList<SimulationObject>();
     
     private float[][] stars = new float[150][3];
     
+    private Map<String, Supplier<Spaceship>> shipTypes = new LinkedHashMap<>();
+    private String selectedShipType = "Rocket";
+
     private Image offscreenImage;
     private Graphics offscreenGraphics;
 
     public SimulationPanel(){
+        shipTypes.put("Rocket", () -> new Rocket(earthX, earthY - 60));
+        shipTypes.put("Fighter", () -> new Fighter(earthX, earthY - 60));
+        shipTypes.put("Cargo", () -> new Cargo(earthX, earthY - 60));
+
         Random random = new Random(7);
         for (int i = 0; i < stars.length; i++) {
             stars[i][0] = random.nextFloat();
@@ -36,18 +48,31 @@ public class SimulationPanel extends Panel{
     }
 
     public void resetSimulation(){
-        ship = new Spaceship(500f, 12, 400, 400, 1000,10f, 90.0, 4000f);
-        
-        sun = new Planet("Sun", 100000000000000f, 150, 400, 500, Color.YELLOW, 0);
-        earth = new Planet("Earth",40000000000000f, 70, 700, 500, Color.BLUE, sun, 8);
-        mars = new Planet("Moon", 20000000000000f, 30, 820, 500, Color.WHITE, earth, 2);
-        
+        ship = shipTypes.get(selectedShipType).get();
 
         objects.clear();
         objects.add(0, ship);
-        objects.add(earth);
-        objects.add(mars);
-        objects.add(sun);
+        objects.add(new Planet("Earth", 50000000000000f, 100, earthX, earthY, Color.BLUE, 0f));
+        objects.add(new Planet("Mars", 30000000000000f, 70, 640, 540, Color.ORANGE, 0f));
+        objects.add(new Planet("Moon", 10000000000000f, 40, 300, 400, Color.LIGHT_GRAY, 0f));
+        objects.add(new Planet("Jupiter", 80000000000000f, 130, 780, 150, new Color(200, 150, 100), 0f));
+        
+        //range is 5-20
+        int rAstCount = (int) (Math.random() * 16) + 5; 
+        
+        List<Asteroid> generatedAsteroids = IntStream.range(0,rAstCount)
+            .parallel()
+            .mapToObj(i -> {
+                int rAstPosx = (int) (Math.random() * 1200);
+                int rAstPosy = (int) (Math.random() * 900);
+                double rAstVx = (Math.random() * 6.0) - 3.0;
+                double rAstVy = (Math.random() * 6.0) - 3.0;
+
+                return new Asteroid(100000f, 25, rAstPosx, rAstPosy, rAstVx, rAstVy, Color.LIGHT_GRAY);
+            })
+            .collect(Collectors.toList());
+
+        objects.addAll(generatedAsteroids);
         
         isRunning = false;
     }
@@ -60,6 +85,29 @@ public class SimulationPanel extends Panel{
         isRunning = false;
     }
 
+    public List<String> getShipTypeName() {
+        return shipTypes.keySet().stream().collect(Collectors.toList());
+    }
+
+    public void setShipType(String name) {
+        selectedShipType = name;
+    }
+
+    public List<String> getDestinationName() {
+        return getPlanets().stream()
+                .map(Planet::getName)
+                .filter(name -> !name.equals(launchPlanet))
+                .collect(Collectors.toList());
+    }
+
+    public void setTargetPlanet(String name) {
+        targetPlanet = name;
+    }
+
+    public String getTargetPlanet() {
+        return targetPlanet;
+    }
+
     public boolean isRunning(){
         return isRunning;
     }
@@ -69,8 +117,7 @@ public class SimulationPanel extends Panel{
             return;
         }
 
-        // [CHANGED] the old for-loop is replaced with a lambda / stream
-        if (!ship.isCrashed()) {
+        if (!ship.isFinished()) { // changed to finished check to allow for landing on planets
             //Calculate the gravitational force between the ship and every planet
             getPlanets().forEach(planet -> ship.Gravity(planet));
  
@@ -78,15 +125,26 @@ public class SimulationPanel extends Panel{
             getPlanets().stream()
                     .filter(planet -> ship.checkCollision(ship, planet))
                     .findFirst()
-                    .ifPresent(planet -> ship.crash(planet.getName()));
+                    .ifPresent(planet -> {
+                        if (planet.getName().equals(targetPlanet)) {
+                            ship.arrive(planet.getName());
+                        } else {
+                            ship.crash(planet.getName());
+                        }
+                    });
+            getObjectsOfType(Asteroid.class).stream()
+                .filter(asteroid -> ship.checkCollision(ship, asteroid))
+                .findFirst()
+                .ifPresent(asteroid -> ship.crash("An Asteroid"));
         }
  
         ship.Fly();
         ship.AdjustAngle();
         
-        objects.forEach(SimulationObject::moveObject);
-        earth.orbit();
-        mars.orbit();
+        for (SimulationObject object : objects) {
+            object.moveObject();
+            
+        }
     }
  
     public <T extends SimulationObject> List<T> getObjectsOfType(Class<T> type) {
@@ -148,9 +206,19 @@ public class SimulationPanel extends Panel{
             offscreenGraphics.fillOval(x, y, size, size);
         }
 
-        earth.draw(offscreenGraphics);
-        mars.draw(offscreenGraphics);
-        sun.draw(offscreenGraphics);
+        getObjectsOfType(Asteroid.class).forEach(asteroid -> asteroid.draw(offscreenGraphics));
+
+        getPlanets().forEach(planet -> planet.draw(offscreenGraphics));
+
+        // draws white ring around the destination planet
+        getPlanets().stream()
+                .filter(planet -> planet.getName().equals(targetPlanet))
+                .findFirst()
+                .ifPresent(planet -> {
+                    int r = planet.size / 2 + 8;
+                    offscreenGraphics.setColor(Color.WHITE);
+                    offscreenGraphics.drawOval((int) (planet.coordinates[0] - r), (int) (planet.coordinates[1] - r), 2 * r, 2 * r);
+                });
 
         Graphics2D g2d = (Graphics2D) offscreenGraphics.create();
 
@@ -168,7 +236,7 @@ public class SimulationPanel extends Panel{
             g2d.fillPolygon(flameX, flameY, 3);
         }
 
-        g2d.setColor(Color.RED);
+        g2d.setColor(ship.colour);
 
         int[] shipPointsX = { shipHalf+2, -shipHalf, -shipHalf };
         int[] shipPointsY = { 0, -shipHalf, shipHalf };
